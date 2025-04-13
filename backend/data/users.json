@@ -1,0 +1,62 @@
+[
+  {
+    "id": "admin-1",
+    "username": "admin",
+    "password": "admin123",
+    "role": "admin",
+    "name": "Admin User",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "emp-1",
+    "username": "employee1",
+    "password": "employee123",
+    "role": "employee",
+    "name": "Employee One",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "5f3f7b2a-1f22-4b95-9f1c-0641260ff6b8",
+    "username": "Kalpa@#1",
+    "password": "Kw2005@3",
+    "name": "Kalpa Wishvajith",
+    "role": "employee",
+    "createdAt": "2025-04-12T04:16:37.824Z",
+    "settings": {
+      "emailNotifications": true,
+      "taskReminders": true,
+      "chatNotifications": true,
+      "darkMode": true
+    }
+  },
+  {
+    "id": "9b1d7938-4ac0-46df-ba67-79ae8715a89b",
+    "username": "Dutch@123",
+    "password": "Dutch123",
+    "name": "Dutch trails",
+    "role": "employee",
+    "createdAt": "2025-04-12T04:25:01.797Z"
+  },
+  {
+    "id": "cec19651-379b-4f5d-92ad-fe9979960b8c",
+    "username": "ADMIN@23",
+    "password": "admin123",
+    "name": "ADMIN",
+    "role": "admin",
+    "createdAt": "2025-04-12T04:26:58.429Z"
+  },
+  {
+    "id": "46a0c720-6ae9-456d-8aee-b9c1fcb0f79d",
+    "username": "DUTCH@#$",
+    "password": "Dutch123",
+    "name": "Dutch trails",
+    "role": "admin",
+    "createdAt": "2025-04-12T04:29:15.669Z",
+    "settings": {
+      "emailNotifications": true,
+      "taskReminders": true,
+      "chatNotifications": true,
+      "darkMode": true
+    }
+  }
+]

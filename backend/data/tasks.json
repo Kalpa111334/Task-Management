@@ -1,0 +1,45 @@
+[
+  {
+    "title": "Cleaning",
+    "description": "Garden Cleaning",
+    "assignedTo": [
+      "5f3f7b2a-1f22-4b95-9f1c-0641260ff6b8"
+    ],
+    "id": "71b55aa4-3e52-4f9e-8bea-fc67004edb08",
+    "status": "approved",
+    "createdAt": "2025-04-12T04:31:21.817Z",
+    "updatedAt": "2025-04-12T12:34:51.987Z",
+    "proofImage": "/uploads/1744461259200-man-homewear-deepcleaning-floor-mop-600nw-2465584683.webp",
+    "submissionNote": "My task is Done"
+  },
+  {
+    "title": "E-Commerce Web Site Create ",
+    "description": "E-Commerce Web Site Create (Clothing Store)",
+    "assignedTo": [
+      "5f3f7b2a-1f22-4b95-9f1c-0641260ff6b8"
+    ],
+    "priority": "medium",
+    "isShortTimeTask": false,
+    "createdBy": "46a0c720-6ae9-456d-8aee-b9c1fcb0f79d",
+    "status": "approved",
+    "createdAt": "2025-04-12T05:06:43.798Z",
+    "updatedAt": "2025-04-12T05:15:51.904Z",
+    "id": "9cdbb35a-f30a-4b1b-9a5c-ada48def7cec",
+    "submissionNote": "Done My Task",
+    "proofImage": "/uploads/1744434474862-66f2c13c54c071713514be8f_Website-redesign.png"
+  },
+  {
+    "title": "QR base Attendance Marking System",
+    "description": "Create a QR base Attendance Marking System",
+    "assignedTo": [
+      "5f3f7b2a-1f22-4b95-9f1c-0641260ff6b8"
+    ],
+    "priority": "medium",
+    "isShortTimeTask": false,
+    "createdBy": "46a0c720-6ae9-456d-8aee-b9c1fcb0f79d",
+    "status": "pending",
+    "createdAt": "2025-04-12T15:05:45.436Z",
+    "updatedAt": "2025-04-12T15:05:45.436Z",
+    "id": "6f81306a-5681-4819-9e61-9e4009512945"
+  }
+]

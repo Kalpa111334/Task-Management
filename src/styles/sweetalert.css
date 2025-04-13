@@ -1,0 +1,67 @@
+/* SweetAlert2 Custom Styles */
+.sweet-alert-zoom {
+  animation: swal2-show 0.3s;
+}
+
+.swal2-popup {
+  border-radius: 15px !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+.swal2-title {
+  font-size: 1.5rem !important;
+  font-weight: 500 !important;
+  color: #2c3e50 !important;
+}
+
+.swal2-html-container {
+  font-size: 1.1rem !important;
+  color: #34495e !important;
+}
+
+.swal2-confirm {
+  padding: 12px 24px !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.swal2-icon {
+  border-width: 3px !important;
+}
+
+/* Success state animations */
+.swal2-icon.swal2-success {
+  border-color: #4CAF50 !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: #4CAF50 !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  border-color: #4CAF50 !important;
+}
+
+/* Error state animations */
+.swal2-icon.swal2-error {
+  border-color: #f44336 !important;
+}
+
+.swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+  background-color: #f44336 !important;
+}
+
+/* Animation for popup */
+@keyframes swal2-show {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+} 
