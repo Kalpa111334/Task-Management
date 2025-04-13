@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { CssBaseline, GlobalStyles, useTheme } from '@mui/material';
+import { CssBaseline, GlobalStyles } from '@mui/material';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -59,7 +59,6 @@ const globalStyles = {
 const AppContent: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { user, isLoading } = useAuth();
-  const theme = useTheme();
 
   useEffect(() => {
     // Simulate minimum loading time for smooth transition

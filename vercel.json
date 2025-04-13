@@ -1,29 +1,17 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "outputDirectory": "dist",
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "handle": "filesystem"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  ],
-  "env": {
-    "VITE_API_URL": "https://task-management-backend.vercel.app",
-    "VITE_SOCKET_URL": "wss://task-management-backend.vercel.app"
-  }
+  ]
 } 

@@ -56,7 +56,7 @@
       "emailNotifications": true,
       "taskReminders": true,
       "chatNotifications": true,
-      "darkMode": true
+      "darkMode": false
     }
   }
 ]

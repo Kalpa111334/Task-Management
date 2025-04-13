@@ -6,8 +6,6 @@ import {
   Typography,
   Box,
   List,
-  ListItem,
-  ListItemText,
   Button,
   TextField,
   IconButton,
@@ -20,7 +18,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  CardActions,
   CircularProgress
 } from '@mui/material';
 import {
@@ -29,7 +26,6 @@ import {
   CheckCircle,
   Pending,
   Upload,
-  Message,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useSocket } from '../contexts/SocketContext';
@@ -264,20 +260,6 @@ const EmployeeDashboard: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return '#ffa726';
-      case 'submitted':
-        return '#42a5f5';
-      case 'approved':
-        return '#66bb6a';
-      case 'rejected':
-        return '#ef5350';
-      default:
-        return '#757575';
-    }
-  };
 
   return (
     <GradientBackground>
@@ -440,13 +422,14 @@ const EmployeeDashboard: React.FC = () => {
               margin="normal"
             />
             <Box sx={{ mt: 2 }}>
-              <input
-                accept="image/*"
-                style={{ display: 'none' }}
-                id="proof-file"
-                type="file"
-                onChange={handleFileChange}
-              />
+              <Box sx={{ display: 'none' }}>
+                <input
+                  accept="image/*"
+                  id="proof-file"
+                  type="file"
+                  onChange={handleFileChange}
+                />
+              </Box>
               <label htmlFor="proof-file">
                 <Button variant="outlined" component="span">
                   Upload Proof Image

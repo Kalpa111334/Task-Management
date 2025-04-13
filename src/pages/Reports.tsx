@@ -12,27 +12,15 @@ import {
   CircularProgress,
   Card,
   CardContent,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   useTheme,
   useMediaQuery,
   Paper,
-  Fade,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Tooltip,
-  IconButton,
-  Tabs,
-  Tab,
   Chip,
-  LinearProgress,
-  Divider,
-  Stack,
   Container,
   TextField,
   Autocomplete,
@@ -41,17 +29,8 @@ import {
   Timeline,
   Assessment,
   TrendingUp,
-  Warning,
-  Download,
-  Preview,
-  Speed as SpeedIcon,
-  Group as GroupIcon,
-  DateRange as DateRangeIcon,
-  Flag as FlagIcon,
   CheckCircle as CheckCircleIcon,
-  Refresh as RefreshIcon,
   PictureAsPdf as PdfIcon,
-  Person,
   Assignment,
 } from '@mui/icons-material';
 import { Task, User } from '../../backend/src/types';
@@ -59,8 +38,7 @@ import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Swal from 'sweetalert2';
-import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfDay, endOfDay } from 'date-fns';
-import { Line, Bar, Pie } from 'react-chartjs-2';
+import { format, subDays, startOfWeek, endOfWeek, startOfDay, endOfDay } from 'date-fns';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -166,8 +144,8 @@ const Reports: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(0);
-  const [dateRange, setDateRange] = useState<DateRange>({
+  const [] = useState(0);
+  const [] = useState<DateRange>({
     startDate: startOfWeek(new Date()),
     endDate: endOfWeek(new Date()),
     label: 'This Week'
@@ -193,7 +171,7 @@ const Reports: React.FC = () => {
   const [employeeStats, setEmployeeStats] = useState<EmployeeStats[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [reportData, setReportData] = useState<ReportData | null>(null);
+  const [] = useState<ReportData | null>(null);
   const [employees, setEmployees] = useState<User[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
@@ -215,48 +193,6 @@ const Reports: React.FC = () => {
   });
 
   // Date range presets
-  const dateRangePresets = [
-    {
-      label: 'Today',
-      getValue: () => ({
-        startDate: new Date(),
-        endDate: new Date(),
-        label: 'Today'
-      })
-    },
-    {
-      label: 'This Week',
-      getValue: () => ({
-        startDate: startOfWeek(new Date()),
-        endDate: endOfWeek(new Date()),
-        label: 'This Week'
-      })
-    },
-    {
-      label: 'This Month',
-      getValue: () => ({
-        startDate: startOfMonth(new Date()),
-        endDate: endOfMonth(new Date()),
-        label: 'This Month'
-      })
-    },
-    {
-      label: 'Last 7 Days',
-      getValue: () => ({
-        startDate: subDays(new Date(), 6),
-        endDate: new Date(),
-        label: 'Last 7 Days'
-      })
-    },
-    {
-      label: 'Last 30 Days',
-      getValue: () => ({
-        startDate: subDays(new Date(), 29),
-        endDate: new Date(),
-        label: 'Last 30 Days'
-      })
-    }
-  ];
 
   // Calculate performance score
   const calculatePerformanceScore = (stats: {
@@ -288,27 +224,8 @@ const Reports: React.FC = () => {
   };
 
   // Get color based on performance score
-  const getPerformanceColor = (score: number): string => {
-    if (score >= 90) return theme.palette.success.main;
-    if (score >= 70) return theme.palette.info.main;
-    if (score >= 50) return theme.palette.warning.main;
-    return theme.palette.error.main;
-  };
 
   // Get status chip color
-  const getStatusColor = (status: string): string => {
-    switch (status.toLowerCase()) {
-      case 'completed':
-      case 'approved':
-        return theme.palette.success.main;
-      case 'pending':
-        return theme.palette.warning.main;
-      case 'rejected':
-        return theme.palette.error.main;
-      default:
-        return theme.palette.grey[500];
-    }
-  };
 
   useEffect(() => {
     fetchData();

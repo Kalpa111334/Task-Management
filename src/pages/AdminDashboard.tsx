@@ -6,8 +6,6 @@ import {
   Typography,
   Box,
   List,
-  ListItem,
-  ListItemText,
   Button,
   TextField,
   IconButton,
@@ -25,43 +23,26 @@ import {
   Divider,
   Avatar,
   LinearProgress,
-  Tooltip,
-  CardActions,
-  Tab,
-  Tabs,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   CircularProgress,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import {
   Send,
-  Add as AddIcon,
-  Edit,
-  Delete,
+  Add,
   People,
   Assignment,
   CheckCircle,
   Pending,
   Timeline,
-  Message,
   Check as CheckIcon,
   Close as CloseIcon,
-  Assessment,
   GetApp,
-  PieChart,
-  CalendarToday,
-  TrendingUp,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useSocket } from '../contexts/SocketContext';
 import axios from 'axios';
-import type { User, ChatMessage, Group } from '../../backend/src/types';
+import type { User, ChatMessage } from '../../backend/src/types';
 import Swal from 'sweetalert2';
 import GradientBackground from '../components/GradientBackground';
 import jsPDF from 'jspdf';
@@ -97,22 +78,7 @@ const StatCard: React.FC<{
   </Card>
 );
 
-interface TaskStats {
-  totalTasks: number;
-  completedTasks: number;
-  pendingTasks: number;
-  rejectedTasks: number;
-  averageCompletionTime: number;
-}
 
-interface EmployeePerformance {
-  employeeId: string;
-  name: string;
-  tasksCompleted: number;
-  tasksRejected: number;
-  averageCompletionTime: number;
-  onTimeDelivery: number;
-}
 
 interface TaskType {
   id: string;
@@ -154,7 +120,6 @@ const AdminDashboard: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState<string>('');
-  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [newTask, setNewTask] = useState<NewTask>({
     title: '',
     description: '',
@@ -166,20 +131,9 @@ const AdminDashboard: React.FC = () => {
   const [openTaskDialog, setOpenTaskDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
   const [openReviewDialog, setOpenReviewDialog] = useState(false);
-  const [reportTab, setReportTab] = useState(0);
-  const [taskStats, setTaskStats] = useState<TaskStats>({
-    totalTasks: 0,
-    completedTasks: 0,
-    pendingTasks: 0,
-    rejectedTasks: 0,
-    averageCompletionTime: 0
-  });
-  const [employeePerformance, setEmployeePerformance] = useState<EmployeePerformance[]>([]);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
-  const [openReportDialog, setOpenReportDialog] = useState(false);
   const [reportType, setReportType] = useState<string>('all');
   const theme = useTheme();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Fetch initial data
@@ -223,10 +177,8 @@ const AdminDashboard: React.FC = () => {
         pendingTasks: allTasks.filter((t: TaskType) => t.status === 'pending').length,
         todaysTasks: allTasks.filter((t: TaskType) => new Date(t.createdAt).setHours(0, 0, 0, 0) === today).length,
       });
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching tasks:', error);
-      setLoading(false);
     }
   };
 
@@ -407,227 +359,6 @@ const AdminDashboard: React.FC = () => {
     setOpenReviewDialog(true);
   };
 
-  const calculateTaskStats = () => {
-    const stats: TaskStats = {
-      totalTasks: tasks.length,
-      completedTasks: tasks.filter(t => t.status === 'approved').length,
-      pendingTasks: tasks.filter(t => t.status === 'pending').length,
-      rejectedTasks: tasks.filter(t => t.status === 'rejected').length,
-      averageCompletionTime: calculateAverageCompletionTime(tasks)
-    };
-    setTaskStats(stats);
-
-    const performance = employees.map(emp => ({
-      employeeId: emp.id,
-      name: emp.name,
-      tasksCompleted: tasks.filter(t => t.assignedTo.includes(emp.id) && t.status === 'approved').length,
-      tasksRejected: tasks.filter(t => t.assignedTo.includes(emp.id) && t.status === 'rejected').length,
-      averageCompletionTime: calculateEmployeeAverageCompletionTime(tasks, emp.id),
-      onTimeDelivery: calculateOnTimeDeliveryRate(tasks, emp.id)
-    }));
-    setEmployeePerformance(performance);
-  };
-
-  const calculateAverageCompletionTime = (tasks: TaskType[]) => {
-    const completedTasks = tasks.filter(t => t.status === 'approved');
-    if (completedTasks.length === 0) return 0;
-
-    const totalTime = completedTasks.reduce((sum, task) => {
-      const start = new Date(task.createdAt).getTime();
-      const end = new Date(task.updatedAt).getTime();
-      return sum + (end - start);
-    }, 0);
-
-    return Math.round(totalTime / (completedTasks.length * 86400000)); // Convert to days
-  };
-
-  const calculateEmployeeAverageCompletionTime = (tasks: TaskType[], employeeId: string) => {
-    const employeeTasks = tasks.filter(t => 
-      t.assignedTo.includes(employeeId) && t.status === 'approved'
-    );
-    if (employeeTasks.length === 0) return 0;
-
-    const totalTime = employeeTasks.reduce((sum, task) => {
-      const start = new Date(task.createdAt).getTime();
-      const end = new Date(task.updatedAt).getTime();
-      return sum + (end - start);
-    }, 0);
-
-    return Math.round(totalTime / (employeeTasks.length * 86400000)); // Convert to days
-  };
-
-  const calculateOnTimeDeliveryRate = (tasks: TaskType[], employeeId: string) => {
-    const employeeTasks = tasks.filter(t => 
-      t.assignedTo.includes(employeeId) && t.status === 'approved' && t.deadline
-    );
-    if (employeeTasks.length === 0) return 100;
-
-    const onTimeTasks = employeeTasks.filter(task => {
-      const completionDate = new Date(task.updatedAt);
-      const deadline = new Date(task.deadline!);
-      return completionDate <= deadline;
-    });
-
-    return Math.round((onTimeTasks.length / employeeTasks.length) * 100);
-  };
-
-  const handleGenerateReport = async () => {
-    try {
-      setIsGeneratingReport(true);
-      
-      // Calculate statistics
-      const completedTasks = tasks.filter(t => t.status === 'approved');
-      const avgCompletionTime = completedTasks.length > 0
-        ? completedTasks.reduce((acc, task) => {
-            const completionTime = new Date(task.updatedAt).getTime() - new Date(task.createdAt).getTime();
-            return acc + (completionTime / (1000 * 60 * 60 * 24));
-          }, 0) / completedTasks.length
-        : 0;
-
-      // Generate PDF
-      const doc = new jsPDF();
-      const pageWidth = doc.internal.pageSize.width;
-      const fileName = `task-management-report-${new Date().toISOString().split('T')[0]}.pdf`;
-
-      // Add header with gradient background
-      const headerHeight = 50;
-      doc.setFillColor(33, 150, 243);
-      doc.rect(0, 0, pageWidth, headerHeight, 'F');
-      
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(24);
-      doc.text('Task Management Report', pageWidth / 2, 20, { align: 'center' });
-      doc.setFontSize(12);
-      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, 30, { align: 'center' });
-
-      // Reset text color for content
-      doc.setTextColor(0, 0, 0);
-
-      // Add Task Statistics
-      doc.setFontSize(18);
-      doc.text('Task Statistics', 14, headerHeight + 15);
-      
-      const taskStatsData = [
-        ['Total Tasks', tasks.length.toString()],
-        ['Completed Tasks', `${completedTasks.length} (${((completedTasks.length / tasks.length) * 100).toFixed(1)}%)`],
-        ['Pending Tasks', tasks.filter(t => t.status === 'pending').length.toString()],
-        ['Rejected Tasks', tasks.filter(t => t.status === 'rejected').length.toString()],
-        ['Average Completion Time', `${avgCompletionTime.toFixed(1)} days`]
-      ];
-
-      doc.autoTable({
-        startY: headerHeight + 25,
-        head: [['Metric', 'Value']],
-        body: taskStatsData,
-        theme: 'grid',
-        headStyles: { 
-          fillColor: [33, 150, 243],
-          textColor: [255, 255, 255],
-          fontSize: 12,
-          fontStyle: 'bold'
-        },
-        styles: {
-          fontSize: 10,
-          cellPadding: 5
-        },
-        alternateRowStyles: {
-          fillColor: [245, 245, 245]
-        }
-      });
-
-      // Add Employee Performance
-      doc.addPage();
-      
-      // Add header to new page
-      doc.setFillColor(33, 150, 243);
-      doc.rect(0, 0, pageWidth, headerHeight, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(24);
-      doc.text('Employee Performance', pageWidth / 2, 20, { align: 'center' });
-      
-      // Reset text color for content
-      doc.setTextColor(0, 0, 0);
-
-      const employeeData = employees.map(emp => {
-        const empTasks = tasks.filter(t => t.assignedTo.includes(emp.id));
-        const empCompletedTasks = empTasks.filter(t => t.status === 'approved');
-        const empAvgTime = empCompletedTasks.length > 0
-          ? empCompletedTasks.reduce((acc, task) => {
-              const completionTime = new Date(task.updatedAt).getTime() - new Date(task.createdAt).getTime();
-              return acc + (completionTime / (1000 * 60 * 60 * 24));
-            }, 0) / empCompletedTasks.length
-          : 0;
-
-        return [
-          emp.username,
-          empCompletedTasks.length.toString(),
-          `${empAvgTime.toFixed(1)} days`,
-          `${((empCompletedTasks.length / Math.max(empTasks.length, 1)) * 100).toFixed(1)}%`,
-          empTasks.filter(t => t.priority === 'high' && t.status === 'approved').length.toString()
-        ];
-      });
-
-      doc.autoTable({
-        startY: headerHeight + 10,
-        head: [['Employee', 'Completed', 'Avg. Time', 'Completion Rate', 'High Priority']],
-        body: employeeData,
-        theme: 'grid',
-        headStyles: { 
-          fillColor: [33, 150, 243],
-          textColor: [255, 255, 255],
-          fontSize: 12,
-          fontStyle: 'bold'
-        },
-        styles: {
-          fontSize: 10,
-          cellPadding: 5
-        },
-        alternateRowStyles: {
-          fillColor: [245, 245, 245]
-        }
-      });
-
-      // Add footer with page numbers
-      const pageCount = doc.getNumberOfPages();
-      for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFontSize(10);
-        doc.setTextColor(128, 128, 128);
-        doc.text(
-          `Page ${i} of ${pageCount}`,
-          pageWidth / 2,
-          doc.internal.pageSize.height - 10,
-          { align: 'center' }
-        );
-      }
-
-      // Save the PDF
-      doc.save(fileName);
-
-      // Show success notification
-      await Swal.fire({
-        icon: 'success',
-        title: 'Report Generated',
-        text: 'The report has been downloaded successfully',
-        toast: true,
-        position: 'top-end',
-        timer: 3000,
-        timerProgressBar: true,
-        showConfirmButton: false
-      });
-
-    } catch (error) {
-      console.error('Error generating report:', error);
-      await Swal.fire({
-        icon: 'error',
-        title: 'Report Generation Failed',
-        text: 'Failed to generate the report. Please try again.',
-      });
-    } finally {
-      setIsGeneratingReport(false);
-    }
-  };
-
   const generateEmployeeTaskReport = async (employeeId?: string) => {
     try {
       if (!tasks.length) {
@@ -737,104 +468,6 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const renderTaskStatistics = () => (
-    <Grid container spacing={3}>
-      <Grid item xs={12} md={6} lg={3}>
-        <Card>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Assignment color="primary" sx={{ mr: 1 }} />
-              <Typography variant="h6">Total Tasks</Typography>
-            </Box>
-            <Typography variant="h4">{taskStats.totalTasks}</Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <Card>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <TrendingUp color="success" sx={{ mr: 1 }} />
-              <Typography variant="h6">Completed</Typography>
-            </Box>
-            <Typography variant="h4">{taskStats.completedTasks}</Typography>
-            <LinearProgress 
-              variant="determinate" 
-              value={(taskStats.completedTasks / taskStats.totalTasks) * 100}
-              color="success"
-              sx={{ mt: 1 }}
-            />
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <Card>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Timeline color="warning" sx={{ mr: 1 }} />
-              <Typography variant="h6">Pending</Typography>
-            </Box>
-            <Typography variant="h4">{taskStats.pendingTasks}</Typography>
-            <LinearProgress 
-              variant="determinate" 
-              value={(taskStats.pendingTasks / taskStats.totalTasks) * 100}
-              color="warning"
-              sx={{ mt: 1 }}
-            />
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <Card>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <CalendarToday color="info" sx={{ mr: 1 }} />
-              <Typography variant="h6">Avg. Completion</Typography>
-            </Box>
-            <Typography variant="h4">{taskStats.averageCompletionTime} days</Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
-  );
-
-  const renderEmployeePerformance = () => (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Employee</TableCell>
-            <TableCell align="right">Tasks Completed</TableCell>
-            <TableCell align="right">Tasks Rejected</TableCell>
-            <TableCell align="right">Avg. Completion Time</TableCell>
-            <TableCell align="right">On-Time Delivery</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {employeePerformance.map((emp) => (
-            <TableRow key={emp.employeeId}>
-              <TableCell>{emp.name}</TableCell>
-              <TableCell align="right">{emp.tasksCompleted}</TableCell>
-              <TableCell align="right">{emp.tasksRejected}</TableCell>
-              <TableCell align="right">{emp.averageCompletionTime} days</TableCell>
-              <TableCell align="right">
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                  {emp.onTimeDelivery}%
-                  <LinearProgress
-                    variant="determinate"
-                    value={emp.onTimeDelivery}
-                    color={emp.onTimeDelivery >= 80 ? 'success' : emp.onTimeDelivery >= 50 ? 'warning' : 'error'}
-                    sx={{ width: 100, ml: 1 }}
-                  />
-                </Box>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-
   const renderReportingSection = () => (
     <Paper sx={{ 
       p: { xs: 2, md: 3 }, 
@@ -882,14 +515,6 @@ const AdminDashboard: React.FC = () => {
       </Box>
     </Paper>
   );
-
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-        <CircularProgress />
-      </Box>
-    );
-  }
 
   return (
     <GradientBackground>
@@ -952,7 +577,7 @@ const AdminDashboard: React.FC = () => {
                 <Typography variant="h5">Task Management</Typography>
                 <Button
                   variant="contained"
-                  startIcon={<AddIcon />}
+                  startIcon={<Add />}
                   onClick={() => setOpenTaskDialog(true)}
                 >
                   Create Task

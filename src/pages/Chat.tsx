@@ -103,12 +103,7 @@ const Chat: React.FC = () => {
 
       const response = await axios.post('http://localhost:3000/api/messages', messageData);
       
-      setMessages(prev => [...prev, {
-        senderId: user?.id || '',  // Ensure senderId is always a string
-        receiverId: selectedUser.id,
-        content: newMessage,
-        timestamp: new Date()
-      }]);
+      setMessages((prev: Message[]) => [...prev, response.data]);
       socket?.emit('new-message', response.data);
       setNewMessage('');
     } catch (error) {

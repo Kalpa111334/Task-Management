@@ -12,7 +12,6 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Dialog,
   Alert,
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
