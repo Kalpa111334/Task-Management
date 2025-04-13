@@ -20,6 +20,10 @@ const Profile: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
+  // Add null check for user object
+  const userRole = user?.role || 'Unknown';
+  const userName = user?.name || 'Unknown';
+
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -68,7 +72,7 @@ const Profile: React.FC = () => {
             <Box>
               <Typography variant="h5">{user?.username}</Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                Role: {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
+                Role: {userRole}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Member since: {new Date(user?.createdAt || '').toLocaleDateString()}

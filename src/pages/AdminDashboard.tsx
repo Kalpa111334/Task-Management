@@ -41,7 +41,7 @@ import {
 } from '@mui/material';
 import {
   Send,
-  Add,
+  Add as AddIcon,
   Edit,
   Delete,
   People,
@@ -941,7 +941,7 @@ const AdminDashboard: React.FC = () => {
                 <Typography variant="h5">Task Management</Typography>
                 <Button
                   variant="contained"
-                  startIcon={<Add />}
+                  startIcon={<AddIcon />}
                   onClick={() => setOpenTaskDialog(true)}
                 >
                   Create Task
