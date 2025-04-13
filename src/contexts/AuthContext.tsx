@@ -2,9 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { AuthUser } from '../types';
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-backend-url.vercel.app'  // Replace with your actual backend URL
-  : 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -40,6 +38,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         username,
         password,
         role
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.data.success) {
