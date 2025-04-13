@@ -2,6 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { AuthUser } from '../types';
 
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://your-backend-url.vercel.app'  // Replace with your actual backend URL
+  : 'http://localhost:3000';
+
 interface AuthContextType {
   user: AuthUser | null;
   login: (username: string, password: string, role: 'admin' | 'employee') => Promise<void>;
@@ -25,16 +29,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string, role: 'admin' | 'employee') => {
     try {
-      const baseURL = 'http://localhost:3000';
-      
       // First check if server is reachable
       try {
-        await axios.get(`${baseURL}/health`);
+        await axios.get(`${API_BASE_URL}/health`);
       } catch (error) {
         throw new Error('Unable to connect to server. Please make sure the server is running.');
       }
 
-      const response = await axios.post(`${baseURL}/api/auth/login`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         username,
         password,
         role
