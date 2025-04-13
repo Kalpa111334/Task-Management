@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Paper,
   Typography,
   Grid,
   Switch,
   FormControlLabel,
   Button,
-  Divider,
   Alert,
   useTheme,
   useMediaQuery,

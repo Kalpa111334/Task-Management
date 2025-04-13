@@ -68,7 +68,7 @@ const Profile: React.FC = () => {
             <Box>
               <Typography variant="h5">{user?.username}</Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                Role: {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
+                Role: {(user?.role ?? '').charAt(0).toUpperCase() + (user?.role ?? '').slice(1)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Member since: {new Date(user?.createdAt || '').toLocaleDateString()}

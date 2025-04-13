@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Paper,
   Typography,
   Grid,
   Card,
@@ -26,7 +25,6 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
-import Swal from 'sweetalert2';
 
 interface TeamMember {
   id: string;
