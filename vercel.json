@@ -11,8 +11,19 @@
   ],
   "routes": [
     {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "VITE_API_URL": "https://task-management-backend.vercel.app",
+    "VITE_SOCKET_URL": "wss://task-management-backend.vercel.app"
+  }
 } 

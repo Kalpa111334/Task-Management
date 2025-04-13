@@ -179,6 +179,7 @@ const AdminDashboard: React.FC = () => {
   const [openReportDialog, setOpenReportDialog] = useState(false);
   const [reportType, setReportType] = useState<string>('all');
   const theme = useTheme();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Fetch initial data
@@ -222,8 +223,10 @@ const AdminDashboard: React.FC = () => {
         pendingTasks: allTasks.filter((t: TaskType) => t.status === 'pending').length,
         todaysTasks: allTasks.filter((t: TaskType) => new Date(t.createdAt).setHours(0, 0, 0, 0) === today).length,
       });
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+      setLoading(false);
     }
   };
 
@@ -879,6 +882,14 @@ const AdminDashboard: React.FC = () => {
       </Box>
     </Paper>
   );
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <GradientBackground>
